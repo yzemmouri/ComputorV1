@@ -43,9 +43,7 @@ function reduced_form(equation)
         }
     }
 
-    var x0 = 0
-    var x1 = 0
-    var x2 = 0
+
     var variabl_degree = []
     for(var i=0;i<positif_coefficients.length;i++)
     {
@@ -69,12 +67,6 @@ function reduced_form(equation)
             if (j == variabl_degree.length && variabl_degree[j-1][0] != degree)
                 variabl_degree.push(tab)
         }
-        // if(positif_coefficients[i].includes('X^2'))
-        //     x2+=parseInt((positif_coefficients[i].split`*`)[0])
-        // if(positif_coefficients[i].includes('X^1'))
-        //     x1+=parseInt((positif_coefficients[i].split`*`)[0])
-        // if(positif_coefficients[i].includes('X^0'))
-        //     x0+=parseInt((positif_coefficients[i].split`*`)[0])
     }
     for(var i=0;i<negatif_coefficients.length;i++)
     {
@@ -98,20 +90,33 @@ function reduced_form(equation)
             if (j == variabl_degree.length && variabl_degree[j-1][0] != degree)
                 variabl_degree.push(tab)
         }
-        // if(negatif_coefficients[i].includes('X^2'))
-        //     x2+=parseInt('-' + (negatif_coefficients[i].split`*`)[0])
-        // if(negatif_coefficients[i].includes('X^1'))
-        //     x1+=parseInt('-' + (negatif_coefficients[i].split`*`)[0])
-        // if(negatif_coefficients[i].includes('X^0'))
-        //     x0+=parseInt('-' + (negatif_coefficients[i].split`*`)[0])
     }
-    console.log(variabl_degree)
-    // var deg2 = x2 == 0 ? '' : x2 + ' * X^2'
-    // var deg1 = x1 == 0 ? '' : (x1 < 0 ? x1 + ' * X^1' : (x2 != 0 ? ' + ' + x1 + ' * X^1' : x1 + ' * X^1'))
-    // var deg0 = x0 == 0 ? ((x2 != 0 || x1 != 0) ? '' : '0') : (x0 < 0 ? x0 : ((x2 != 0 || x1 != 0) ? ' + ' + x0 : x0))
-    // console.log('Reduced form: ' + deg2 + deg1 + deg0 + ' = 0')
+    variabl_degree.sort(function (a, b) {
+        return b[0] - a[0];
+    });
 
-    // var polynomial_degree = x2 != 0 ? 2 : (x1 != 0 ? 1 : 0)
-    // console.log('Polynomial degree: ' + polynomial_degree)
-    //reduced_form+=' = 0'
+
+    var reduced_equation = ''
+    var is_null = true
+    var polynomial_degree = 0
+    for (var i = 0; i < variabl_degree.length; i++) {
+        if (i == 0)
+            reduced_equation += variabl_degree[i][1] == 0 ? '' : variabl_degree[i][1] + ' * X^' + variabl_degree[i][0]
+        else if (i != variabl_degree.length - 1) {
+            reduced_equation += variabl_degree[i][1] == 0 ? '' : (variabl_degree[i][1] < 0 ? ((reduced_equation != '' ? ' ' : '') + '- ' + (variabl_degree[i][1] * -1) + ' * X^' + variabl_degree[i][0]) : (reduced_equation != '' ? ' + ' + variabl_degree[i][1] + ' * X^' + variabl_degree[i][0] : variabl_degree[i][1] + ' * X^' + variabl_degree[i][0]))
+        }
+        else
+            reduced_equation += variabl_degree[i][1] == 0 ? '' : (variabl_degree[i][1] < 0 ? variabl_degree[i][1] : (reduced_equation != '' ? ' + ' + variabl_degree[i][1] : variabl_degree[i][1]))
+        if (variabl_degree[i][1] != 0 && polynomial_degree == 0)
+        {
+            is_null = false
+            polynomial_degree = variabl_degree[i][0]
+        }
+    }
+    if (is_null)
+        reduced_equation += '0';
+    reduced_equation += ' = 0';
+
+    console.log('Reduced form: ' + reduced_equation)
+    console.log('Polynomial degree: ' + polynomial_degree)
 }
