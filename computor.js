@@ -17,9 +17,9 @@ function reduced_form(equation)
 {
     var splited_form_by_equal = equation.replace(/ /g, '').split`=`;
     var reduced_form = splited_form_by_equal[0]
-    if (splited_form_by_equal[1][0] == '-')
-        reduced_form+='+';
-    else
+    if (splited_form_by_equal[1][0] == '+')
+        splited_form_by_equal[1].replace('+','');
+    if (splited_form_by_equal[1][0] != '-')
         reduced_form+='-';
     for (var c = 0; c < splited_form_by_equal[1].length; c++) {
         if (splited_form_by_equal[1][c] == '-')
