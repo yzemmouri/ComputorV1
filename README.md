@@ -1,12 +1,13 @@
 # ComputorV1
 
-Ce programme résout des équations simples.
+Ce programme en Javascript résout des équations simples.
 Le programme prendra en paramètre une équation polynomiale. C’est-à-dire ne faisant intervenir que des puissances, aucune fonction compliquée.
 Le programme devra afficher sa (ses) solution(s).
 
 exemples :
 
->./computor "5 * X^0 + 4 * X^1 - 9.3 * X^2 = 1 * X^0"
+>node ./computor.js
+>entrer une equation: "5 * X^0 + 4 * X^1 - 9.3 * X^2 = 1 * X^0"
 Reduced form: 4 * X^0 + 4 * X^1 - 9.3 * X^2 = 0
 Polynomial degree: 2
 Discriminant is strictly positive, the two solutions are:
