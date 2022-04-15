@@ -71,14 +71,14 @@ function reduced_form(equation)
     positif_expressions = positif_expressions.filter(e => e); /** Remove Empty Strings from an Array */
     negatif_expressions = negatif_expressions.filter(e => e);
     
-    // console.log(positif_expressions);
-    // console.log(negatif_expressions);
 
-    var variabl_degree = [[0, 0]]
+
+    var degree_coeff = []
+    var indeterminate
+    /** Positif expressions */
     for (var i = 0; i < positif_expressions.length; i++)
     {
         var coefficient
-        var indeterminate
         var degree
 
         var splited_by_times
@@ -123,82 +123,124 @@ function reduced_form(equation)
                 degree = 0;
             }
         }
-        console.log(coefficient);
-        console.log(degree);
-        // var tab = [degree, coefficient]
-        // if (coefficient != 0) {
-        //     if (variabl_degree.length == 0)
-        //     variabl_degree.push(tab)
-        // else
-        // {
-        //     var j = 0
-        //     while(j<variabl_degree.length)
-        //     {
-        //         if(variabl_degree[j][0] == degree)
-        //         {
-        //             variabl_degree[j][1] += coefficient
-        //             break;
-        //         }
-        //         j++;
-        //     }
-        //     if (j == variabl_degree.length && variabl_degree[j-1][0] != degree)
-        //         variabl_degree.push(tab)
-        // }
-        // }
+        
+        if (coefficient != 0) {
+            var tab = [degree, coefficient]
+            if (degree_coeff.length == 0)
+                degree_coeff.push(tab)
+            else
+            {
+                var j = 0
+                while(j < degree_coeff.length)
+                {
+                    if(degree_coeff[j][0] == degree)
+                    {
+                        degree_coeff[j][1] += coefficient
+                        break;
+                    }
+                    j++;
+                }
+                if (j == degree_coeff.length && degree_coeff[j-1][0] != degree)
+                    degree_coeff.push(tab)
+            }
+        }
     }
-//     for (var i = 0; i < negatif_expressions.length; i++)
-//     {
-//         var degree = parseInt((negatif_expressions[i].split`^`)[1])
-//         var coefficient = parseFloat('-' + (negatif_expressions[i].split`*`)[0])
-//         var tab = [degree, coefficient]
-//         if (variabl_degree.length == 0)
-//             variabl_degree.push(tab)
-//         else
-//         {
-//             var j = 0
-//             while(j<variabl_degree.length)
-//             {
-//                 if(variabl_degree[j][0] == degree)
-//                 {
-//                     variabl_degree[j][1] += coefficient
-//                     break;
-//                 }
-//                 j++;
-//             }
-//             if (j == variabl_degree.length && variabl_degree[j-1][0] != degree)
-//                 variabl_degree.push(tab)
-//         }
-//     }
-//     variabl_degree.sort(function (a, b) {
-//         return b[0] - a[0];
-//     });
+    /** Negatif expressions */
+    for (var i = 0; i < negatif_expressions.length; i++)
+    {
+        var coefficient
+        var degree
+        
+        var splited_by_times
+        var splited_by_exp
+        var splited_by_indeter
+        
+        splited_by_times = negatif_expressions[i].split`*`;
+        if (splited_by_times.length == 2)
+        {
+            coefficient = parseFloat('-' + splited_by_times[0])
+            splited_by_exp = splited_by_times[1].split`^`
+            if (splited_by_exp.length == 2)
+            {
+                indeterminate = splited_by_exp[0]
+                degree = parseInt(splited_by_exp[1])
+            }
+            else
+            {
+                indeterminate = splited_by_exp[0]
+                degree = 1
+            }
+        }
+        else
+        {
+            var indeter_ind = index_indeter(negatif_expressions[i])
+            if (indeter_ind != -1)
+            {
+                indeterminate = negatif_expressions[i][indeter_ind]
+                splited_by_indeter = negatif_expressions[i].split(indeterminate)
+                if (splited_by_indeter[0] != '')
+                coefficient = parseFloat('-' + splited_by_indeter[0])
+                else
+                coefficient = -1;
+                if (splited_by_indeter[1] == '')
+                degree = 1
+                else
+                degree = parseInt((negatif_expressions[i].split`^`)[1])
+            }
+            else
+            {
+                coefficient = parseFloat('-' + negatif_expressions[i])
+                degree = 0;
+            }
+        }
+        
+        var tab = [degree, coefficient]
+        if (degree_coeff.length == 0)
+        degree_coeff.push(tab)
+        else
+        {
+            var j = 0
+            while(j < degree_coeff.length)
+            {
+                if(degree_coeff[j][0] == degree)
+                {
+                    degree_coeff[j][1] += coefficient
+                    break;
+                }
+                j++;
+            }
+            if (j == degree_coeff.length && degree_coeff[j-1][0] != degree)
+            degree_coeff.push(tab)
+        }
+    }
+    degree_coeff.sort(function (a, b) {
+        return b[0] - a[0];
+    });
 
-//     /** Reduced Format */
+    /** Reduced Format */
+    console.log(positif_expressions);
+    console.log(negatif_expressions);
+    var reduced_equation = ''
+    var is_null = true
+    for (var i = 0; i < degree_coeff.length; i++) {
+        var indeter_exp = degree_coeff[i][0] == 0 ? '' : (degree_coeff[i][0] == 1 ? ' * X' : ' * X^' + degree_coeff[i][0])
+        if (i == 0)
+            reduced_equation += degree_coeff[i][1] == 0 ? '' : degree_coeff[i][1] + indeter_exp;
+        else
+            reduced_equation += degree_coeff[i][1] == 0 ? '' : (degree_coeff[i][1] < 0 ? ((reduced_equation != '' ? ' ' : '') + '- ' + (degree_coeff[i][1] * -1) + indeter_exp) : (reduced_equation != '' ? ' + ' + degree_coeff[i][1] + indeter_exp : degree_coeff[i][1] + indeter_exp))
 
-//     var reduced_equation = ''
-//     var is_null = true
-//     for (var i = 0; i < variabl_degree.length; i++) {
-//         var indeterminate = variabl_degree[i][0] == 0 ? '' : (variabl_degree[i][0] == 1 ? ' * X' : ' * X^' + variabl_degree[i][0])
-//         if (i == 0)
-//             reduced_equation += variabl_degree[i][1] == 0 ? '' : variabl_degree[i][1] + indeterminate
-//         else
-//             reduced_equation += variabl_degree[i][1] == 0 ? '' : (variabl_degree[i][1] < 0 ? ((reduced_equation != '' ? ' ' : '') + '- ' + (variabl_degree[i][1] * -1) + indeterminate) : (reduced_equation != '' ? ' + ' + variabl_degree[i][1] + indeterminate : variabl_degree[i][1] + indeterminate))
-
-//         if (variabl_degree[i][1] != 0)
-//         {
-//             is_null = false
-
-//         }
-//     }
-//     if (is_null)
-//         reduced_equation += '0';
-//     reduced_equation += ' = 0';
-//     console.log(variabl_degree)
-//     console.log('Reduced form: ' + reduced_equation)
+        if (degree_coeff[i][1] != 0)
+            is_null = false
+    }
+    if (is_null)
+        reduced_equation += '0';
+    reduced_equation += ' = 0';
+    // console.log(degree_coeff)
+    // console.log('Reduced form: ' + reduced_equation)
 
 //     /** Degree */
 
-//     var polynomial_degree = variabl_degree[0][0]
+//     var polynomial_degree = degree_coeff[0][0]
 //     console.log('Polynomial degree: ' + polynomial_degree)
 
 //     /** Solution */
@@ -206,21 +248,21 @@ function reduced_form(equation)
 //     if (polynomial_degree > 2)
 //         console.log('The polynomial degree is stricly greater than 2, I can\'t solve.');
 //     else if (polynomial_degree == 2) {
-//         var delta = ((variabl_degree.length == 3 ? variabl_degree[1][1] ** 2 : 0) - 4 * variabl_degree[0][1] * variabl_degree[2][1])
+//         var delta = ((degree_coeff.length == 3 ? degree_coeff[1][1] ** 2 : 0) - 4 * degree_coeff[0][1] * degree_coeff[2][1])
 //         if (delta < 0)
 //             console.log('Discriminant is strictly negative, The equation has no solution in R!')
 //         else if (delta == 0)
-//             console.log('Discriminant is null, The only solution is:\n' + (variabl_degree.length == 3 ? variabl_degree[1][1] ** 2 : 0) / (-2 * variabl_degree[1][0]))
+//             console.log('Discriminant is null, The only solution is:\n' + (degree_coeff.length == 3 ? degree_coeff[1][1] ** 2 : 0) / (-2 * degree_coeff[1][0]))
 //         else {
 //             var delta_sqrt = _sqrt(delta);
-//             var r1 = (-(variabl_degree.length == 3 ? variabl_degree[1][1] : 0) + delta_sqrt) / (2 * variabl_degree[0][1])
-//             var r2 = (-(variabl_degree.length == 3 ? variabl_degree[1][1] : 0) - delta_sqrt) / (2 * variabl_degree[0][1])
+//             var r1 = (-(degree_coeff.length == 3 ? degree_coeff[1][1] : 0) + delta_sqrt) / (2 * degree_coeff[0][1])
+//             var r2 = (-(degree_coeff.length == 3 ? degree_coeff[1][1] : 0) - delta_sqrt) / (2 * degree_coeff[0][1])
 //             console.log('Discriminant is strictly positive, the two solutions are:\n' + r1.toFixed(6) + '\n' + r2.toFixed(6))
 //         }
 //     }
 //     else if (polynomial_degree == 1) {
-//         var a = variabl_degree[0][1]
-//         var b = variabl_degree[1][1]
+//         var a = degree_coeff[0][1]
+//         var b = degree_coeff[1][1]
 //         console.log('the solution is:\n' + b / a * -1);
 //     }
 //     else if (polynomial_degree == 0) {
