@@ -235,42 +235,45 @@ function reduced_form(equation)
     if (is_null)
         reduced_equation += '0';
     reduced_equation += ' = 0';
-    // console.log(degree_coeff)
-    // console.log('Reduced form: ' + reduced_equation)
+    console.log(degree_coeff)
+    console.log('Reduced form: ' + reduced_equation)
 
-//     /** Degree */
+    /** Degree */
 
-//     var polynomial_degree = degree_coeff[0][0]
-//     console.log('Polynomial degree: ' + polynomial_degree)
+    var polynomial_degree = degree_coeff[0][0]
+    console.log('Polynomial degree: ' + polynomial_degree)
 
-//     /** Solution */
+    /** Solution */
 
-//     if (polynomial_degree > 2)
-//         console.log('The polynomial degree is stricly greater than 2, I can\'t solve.');
-//     else if (polynomial_degree == 2) {
-//         var delta = ((degree_coeff.length == 3 ? degree_coeff[1][1] ** 2 : 0) - 4 * degree_coeff[0][1] * degree_coeff[2][1])
-//         if (delta < 0)
-//             console.log('Discriminant is strictly negative, The equation has no solution in R!')
-//         else if (delta == 0)
-//             console.log('Discriminant is null, The only solution is:\n' + (degree_coeff.length == 3 ? degree_coeff[1][1] ** 2 : 0) / (-2 * degree_coeff[1][0]))
-//         else {
-//             var delta_sqrt = _sqrt(delta);
-//             var r1 = (-(degree_coeff.length == 3 ? degree_coeff[1][1] : 0) + delta_sqrt) / (2 * degree_coeff[0][1])
-//             var r2 = (-(degree_coeff.length == 3 ? degree_coeff[1][1] : 0) - delta_sqrt) / (2 * degree_coeff[0][1])
-//             console.log('Discriminant is strictly positive, the two solutions are:\n' + r1.toFixed(6) + '\n' + r2.toFixed(6))
-//         }
-//     }
-//     else if (polynomial_degree == 1) {
-//         var a = degree_coeff[0][1]
-//         var b = degree_coeff[1][1]
-//         console.log('the solution is:\n' + b / a * -1);
-//     }
-//     else if (polynomial_degree == 0) {
-//         if (reduced_equation == '0 = 0')
-//             console.log('the solution is:\nall real numbers are solution.')
-//         else
-//             console.log('The equation has no solution!')
-//     }
+    if (polynomial_degree > 2)
+        console.log('The polynomial degree is stricly greater than 2, I can\'t solve.');
+    else if (polynomial_degree == 2) {
+        var delta = (((degree_coeff.length >= 2 && degree_coeff[1][0] == 1) ? degree_coeff[1][1] ** 2 : 0) - 4 * degree_coeff[0][1] * ((degree_coeff.length >= 3 && degree_coeff[2][0] == 0) ? degree_coeff[2][1] : 0))
+        if (delta < 0)
+            console.log('Discriminant is strictly negative, The equation has no solution in R!')
+        else if (delta == 0)
+            console.log('Discriminant is null, The only solution is:\n' + ((degree_coeff.length >= 2 && degree_coeff[1][0] == 1) ? degree_coeff[1][1] : 0) / (-2 * degree_coeff[0][1]))
+        else {
+            var delta_sqrt = _sqrt(delta);
+            var r1 = (-((degree_coeff.length >= 2 && degree_coeff[1][0] == 1) ? degree_coeff[1][1] : 0) + delta_sqrt) / (2 * degree_coeff[0][1])
+            var r2 = (-((degree_coeff.length >= 2 && degree_coeff[1][0] == 1) ? degree_coeff[1][1] : 0) - delta_sqrt) / (2 * degree_coeff[0][1])
+            console.log('Discriminant is strictly positive, the two solutions are:\n' + r1.toFixed(6) + '\n' + r2.toFixed(6))
+        }
+    }
+    else if (polynomial_degree == 1) {
+        var a = degree_coeff[0][1]
+        var b = degree_coeff.length == 2 ? degree_coeff[1][1] : 0
+        if (reduced_equation == '0 = 0')
+            console.log('the solution is:\nall real numbers are solution.')
+        else
+            console.log('the solution is:\n' + b / a * -1);
+    }
+    else if (polynomial_degree == 0) {
+        if (reduced_equation == '0 = 0')
+            console.log('the solution is:\nall real numbers are solution.')
+        else
+            console.log('The equation has no solution!')
+    }
 }
 
 /** Used Function */
