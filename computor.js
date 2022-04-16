@@ -20,6 +20,8 @@ function msg_err(msg)
 
 function reduced_form(equation)
 {
+    var remove_spaces = equation.replace(/ /g, '')
+    
     var splited_by_equal = equation.replace(/ /g, '').split`=`;
     if (splited_by_equal.length != 2)
     {
@@ -320,3 +322,10 @@ function index_indeter(str) {
     }
     return (-1);
   };
+
+  
+  function isValidPolynom(input)
+  {
+    var   polynomeRegex = /^([+-]([0-9]+(\.[0-9]+)?(\*[a-zA-Z](\^[0-9]+)?|[a-zA-Z](\^[0-9]+)?)?|[a-zA-z](\^[0-9]+)?))+=([+-]([0-9]+(\.[0-9]+)?(\*[a-zA-Z](\^[0-9]+)?|[a-zA-Z](\^[0-9]+)?)?|[a-zA-z](\^[0-9]+)?))+$/g
+    return (polynomeRegex.test(input))
+  }
